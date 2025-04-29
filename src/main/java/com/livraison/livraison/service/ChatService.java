@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class ChatService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final WebSocketNotificationService webSocketNotificationService;
 
     public MessageDTO sendMessage(NewMessageRequest request, Long senderId) {
         User sender = userRepository.findById(senderId).orElseThrow((()->new RuntimeException("Sender not found")));
@@ -36,7 +37,9 @@ public class ChatService {
         message.setReceiver(receiver);
         message.setContent(request.getContent());
         message = messageRepository.save(message);
-        return MessageMapper.INSTANCE.messageToMessageDTO(message);
+        MessageDTO messageDTO = MessageMapper.INSTANCE.messageToMessageDTO(message);
+        webSocketNotificationService.notifyNewMessage(messageDTO);
+        return messageDTO;
     }
 
     public List<MessageDTO> getConversation(Long userId1, Long userId2) {

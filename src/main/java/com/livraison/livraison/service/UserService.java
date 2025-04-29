@@ -15,6 +15,11 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+    @Autowired
+    UserRepository userRepository;
 
-
+    public UserDTO getUser(Long idUser){
+        Optional<User> user = userRepository.findById(idUser);
+        return user.map(UserMapper.INSTANCE::userToUserDTO).orElse(null);
+    }
 }
