@@ -49,7 +49,7 @@ public class ChatService {
         List<Message> messages = messageRepository.findConversationBetweenUsers(userId1, userId2);
 
         for (Message message : messages) {
-            if (!message.isRead() && message.getReceiver().getId().equals(userId1)) {
+            if (!message.isRead() && message.getReceiver().getId().equals(userId2)) {
                 message.setRead(true);
                 message.setReadAt(LocalDateTime.now());
                 messageRepository.save(message);
@@ -86,4 +86,18 @@ public class ChatService {
 
         return new ArrayList<>(conversationMap.values());
     }
+
+    public void markMessageAsRead(Long messageId, Long userId) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new RuntimeException("Message not found"));
+
+        if (message.getReceiver().getId().equals(userId) && !message.isRead()) {
+            message.setRead(true);
+            message.setReadAt(LocalDateTime.now());
+            messageRepository.save(message);
+            webSocketNotificationService.notifyMessageRead(message.getSender().getId(),messageId);
+        }
+    }
+
+
 }

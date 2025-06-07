@@ -49,4 +49,12 @@ public class ChatController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(chatService.sendMessage(request, userDetails.getId()));
     }
+
+    @PostMapping("/markAsRead/{messageId}")
+    public ResponseEntity<Void> markAsRead(@PathVariable Long messageId,
+                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        chatService.markMessageAsRead(messageId, userDetails.getId());
+        return ResponseEntity.ok().build();
+    }
+
 }

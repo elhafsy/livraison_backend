@@ -26,7 +26,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // Configure l'endpoint WebSocket avec SockJS fallback
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("http://localhost:3000") // URL de votre frontend React
+                .setAllowedOrigins("http://192.168.1.167:3000") // URL de votre frontend React
                 .withSockJS();
     }
 }

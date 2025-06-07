@@ -22,12 +22,12 @@ public class WebSocketNotificationService {
     }
 
     public void notifyNewMessage(MessageDTO message) {
-//        messagingTemplate.convertAndSendToUser(
-//                message.getReceiver().getId().toString(),
-//                "/queue/messages",
-//                message
-//        );
         String destination = "/queue/messages-" + message.getReceiver().getId().toString();
         messagingTemplate.convertAndSend(destination, message);
     }
+    public void notifyMessageRead(Long receiverId, Long messageId) {
+        String destination = "/queue/message-read-" + receiverId.toString();
+        messagingTemplate.convertAndSend(destination, messageId);
+    }
+
 }
